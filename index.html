@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Period & Body Literacy Companion</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/react@18.0.0/umd/react.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@18.0.0/umd/react-dom.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="manifest.json" href="manifest.json">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+            color: #2d3748;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .app-container {
+            max-width: 375px;
+            min-height: 812px;
+            margin: 0 auto;
+            background-color: #fff;
+            box-shadow: 0 0 30px rgba(102, 126, 234, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .screen {
+            display: none;
+            padding-bottom: 70px;
+            min-height: 812px;
+        }
+        
+        .screen.active {
+            display: block;
+        }
+        
+        .nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            z-index: 100;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #a0aec0;
+            text-decoration: none;
+            font-size: 12px;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-item.active {
+            color: #667eea;
+        }
+        
+        .nav-item i {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+        
+        .header {
+            padding: 25px 20px;
+            border-bottom-left-radius: 25px;
+            border-bottom-right-radius: 25px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #2d3748;
+        }
+        
+        .card-subtitle {
+            font-size: 14px;
+            color: #718096;
+            margin-bottom: 15px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 30px;
+            text-align: center;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+        
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+        
+        .btn-full {
+            display: block;
+            width: 100%;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+        }
+        
+        .form-checkbox {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .form-checkbox input {
+            margin-right: 10px;
+            margin-top: 3px;
+        }
+        
+        .form-checkbox label {
+            font-size: 14px;
+            color: #4a5568;
+            line-height: 1.4;
+        }
+        
+        .cycle-phase {
+            margin: 15px;
+        }
+        
+        .symptom-tracker {
+            margin: 15px;
+        }
+        
+        .symptom-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .symptom {
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: #edf2f7;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .symptom.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 15px;
+        }
+        
+        .more-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 15px;
+        }
+        
+        .calendar-container {
+            padding: 15px;
+        }
+        
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .prediction {
+            text-align: center;
+            padding: 15px;
+            background: #f0f4ff;
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .journal-entry {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+        }
+        
+        .past-entries {
+            padding: 15px;
+        }
+        
+        .profile-dashboard {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 15px;
+        }
+        
+        .stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .settings-list {
+            padding: 15px;
+        }
+        
+        .subscription-status {
+            padding: 20px;
+        }
+        
+        .subscription-plans {
+            padding: 25px;
+        }
+        
+        .plan {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .plan.featured {
+            border: 2px solid #667eea;
+            background: #f0f4ff;
+            border-bottom-left-radius: 16px;
+            border-bottom-right-radius: 16px;
+            transform: scale(1.03);
+        }
+        
+        .plan-badge {
+            position: absolute;
+            top: 12px;
+            right: -30px;
+            background: #667eea;
+            color: white;
+            padding: 5px 30px;
+            font-size: 12px;
+            font-weight: 600;
+            transform: rotate(45deg);
+        }
+        
+        .benefit-title {
+            font-size: 20px;
+            margin-bottom: 15px;
+            text-align: center;
+            color: #2d3748;
+        }
+        
+        .benefit-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .reward-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+    </style>
+    <script type="text/babel">
+        const { useState } = React.useState;
+        
+        function App() {
+            const [activeScreen, setActiveScreen] = useState('home');
+            
+            return (
+                <div className="app-container">
+                    <nav className="nav">
+                        <NavItem icon="home" text="Home" onClick={() => setActiveScreen('home')} active={activeScreen === 'home'} />
+                        <NavItem icon="book" text="Learn" onClick={() => setActiveScreen('learn')} active={activeScreen === 'learn'} />
+                        <NavItem icon="users" text="Community" onClick={() => setActiveScreen('community')} active={activeScreen === 'community'} />
+                        <NavItem icon="user" text="Profile" onClick={() => setActiveScreen('profile')} active={activeScreen === 'profile'} />
+                        <NavItem icon="th" text="More" onClick={() => setActiveScreen('more')} active={activeScreen === 'more'} />
+                    </nav>
+                    
+                    <HomeScreen active={activeScreen === 'home'} />
+                    <LearnScreen active={activeScreen === 'learn'} />
+                    <CommunityScreen active={activeScreen === 'community'} />
+                    <ProfileScreen active={activeScreen === 'profile'} />
+                    <MoreScreen active={activeScreen === 'more'} />
+                </div>
+            );
+        }
+        
+        function NavItem({ icon, text, onClick, active }) {
+            return (
+                <a 
+                    href="#"
+                    onClick={(e) => { e.preventDefault(); onClick(); }}
+                    className={`nav-item ${active ? 'active' : ''}`}
+                >
+                    <i className={`fas fa-${icon}`}></i>
+                    <span>{text}</span>
+                </a>
+            );
+        }
+        
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/react@18.0.0/umd/react.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@18.0.0/umd/react-dom.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+</body>
+</html>
